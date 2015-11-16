@@ -7,8 +7,8 @@ from queue import *
 from urllib.parse import urlparse
 import urllib.request as urllib2
 
-# for searching and downloading the photo to phot folder
 image = 0
+# for searching and downloading the photo to photo folder
 
 def image_search(soup):
     global image
@@ -28,7 +28,7 @@ def image_search(soup):
     return
 
 
-def func(q,url,url_list,count):
+def func(q , url , url_list ,count):
     q.put(url)
     cntr = 0
     level = 0
@@ -59,7 +59,7 @@ def func(q,url,url_list,count):
             if s_regex is None and s_regex1 is None:
                 continue
 
-            print(s)
+          #  print(s)
             if cntr >= count:
                 break
             if len(parsed.netloc) != 0 :
@@ -76,23 +76,17 @@ def func(q,url,url_list,count):
         if cntr >= count:
             break
 
-
-
 def main():
     q = Queue(maxsize=0)
     url_list = {}
-    #url = input('enter the url to scrape')
-    url='http://codeforces.com/profile/tourist'
+    url='http://codeforces.com/ratings'   # the ranking page of codeforces
     url_list[urlparse(url).path]=0
-    #count = input('enter the number of pages to visit')
-    count=1000
+    count = input('enter the number of pages to visit')
     count = int(count)
-    func(q,url,url_list,count)
+    func(q , url , url_list , count)
     print('-----------------------------links visited-------------------------------------')
     for links in url_list.keys():
-        print(url_list[links])
-
-
+        print(links)
 
 if __name__ == "__main__":
     main()
