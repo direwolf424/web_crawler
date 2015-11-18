@@ -8,8 +8,8 @@ from urllib.parse import urlparse
 import urllib.request as urllib2
 
 image = 0
-# for searching and downloading the photo to photo folder
 
+# for searching and downloading the photo to photo folder
 def image_search(soup):
     global image
     for link in soup.find_all('img'):
