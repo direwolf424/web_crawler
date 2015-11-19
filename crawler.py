@@ -19,12 +19,7 @@ def func(q , url , url_list ,count , start , total_time):
     level = 0
     while not q.empty():
         url = q.get()
-        try:
-            html = requests.get(url,timeout=1)
-        except requests.exceptions.RequestException as err: 
-            q.get()
-            continue
-
+        html = requests.get(url)
         soup = extract_href(html.text)   #calling the regex function to extarct the href attribute  
         html.encoding = 'utf-8'
         html = html.content
@@ -51,6 +46,7 @@ def func(q , url , url_list ,count , start , total_time):
             url_list[scheme +'://'+ netloc + '/' + parsed.path]=level
 
 
+          #  print(s)
             if len(parsed.netloc) != 0 :
                 q.put(s)
             else:                   #for relative path
