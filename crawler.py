@@ -1,57 +1,40 @@
+#!/bin/env python
+
+
 import requests
-import sys
 import re
-import os
-from bs4 import BeautifulSoup
 from queue import *
 from urllib.parse import urlparse
 import urllib.request as urllib2
 import time                                 # for calculating time 
 
-image = 0
-
-# for searching and downloading the photo to photo folder
-def image_search(soup):
-    global image
-    for link in soup.find_all('img'):
-        check_photo = link.get('src')
-        check = re.search('/userphoto/',check_photo)
-        if check is not None :
-            username = re.search('title/(.+?)/photo.jpg',check_photo)
-            username = username.group(1)
-            img = urllib2.urlopen(check_photo)
-            localfile = open(os.getcwd()+'/photo/'+username+'.jpg' , 'wb')
-            localfile.write(img.read())
-            localfile.close()
-            print(username +' '+str(image))
-            image += 1
-
-    return
+def extract_href(html):
+    list_href = re.findall('<a(.+?)href="(.+?)"',html)
+    return list_href
 
 
 def func(q , url , url_list ,count , start , total_time):
     q.put(url)
-    cntr = 0
+    cntr = 1
     level = 0
     while not q.empty():
         url = q.get()
         html = requests.get(url)
+        soup = extract_href(html.text)   #calling the regex function to extarct the href attribute  
         html.encoding = 'utf-8'
         html = html.content
-        print(url + str(cntr))
-        soup = BeautifulSoup(html ,'html.parser')
+        print(str(cntr) + ' --> ' +url)
         url1 = urlparse(url)
         netloc = url1.netloc
         scheme = url1.scheme
-        #f_write = open(netloc+url1.path+'.html','wb')
-        f_write = open('page'+str(cntr),'wb')
+        f_write = open('page'+str(cntr)+'.html','wb')
         f_write.write(html)
         f_write.close()
         if cntr >= count or (time.time() - start) >=total_time :
             return
         cntr+=1
-        for link in soup.find_all('a'):
-            s= link.get('href')
+        for link in soup:
+            s= link[1]
             parsed = urlparse(s)
             s_check = url_list.get(s)
             if type(s_check) == int:          #checking if url is visited
@@ -77,17 +60,15 @@ def func(q , url , url_list ,count , start , total_time):
 def main():
     q = Queue(maxsize=0)
     url_list = {}
-    url=input('enter the page to start')# the ranking page of codeforces
+    url=input('enter the page to start---->')# the ranking page of codeforces
     url_list[url]=0
-    count = input('enter the number of pages to visit')
+    count = input('enter the number of pages to visit---->')
     count = int(count)
-    total_time = input('enter the time in second')
+    total_time = input('enter the time in second---->')
     total_time = int(total_time)
     start = time.time()
+    print('Please wait while the contents are being downloaded and written as page(1-n).html in your current directory\n')
     func(q , url , url_list , count , start , total_time)
-    #print('-----------------------------links visited-------------------------------------')
-    #for links in url_list.keys():
-        #print(links)
 
 if __name__ == "__main__":
     main()
