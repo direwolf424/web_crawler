@@ -19,7 +19,11 @@ def func(q , url , url_list ,count , start , total_time): # scraper function
     level = 0
     while not q.empty():                                   
         url = q.get()                                     # pop url from queue
-        html = requests.get(url)                          # get webpage using request 
+        try:
+            html = requests.get(url,timeout=1)            # get webpage using request 
+        except requests.exceptions.RequestException as err:   #handling error 
+            q.get()
+            continue
         soup = extract_href(html.text)   #                # call extract_href function 
         html.encoding = 'utf-8'               
         html = html.content                              
