@@ -52,7 +52,7 @@ def func(q , url , url_list ,count , start , total_time): # scraper function
 
             if len(parsed.netloc) != 0 :                                   # if not a relative path push into the queue
                 q.put(s)
-            else:                  
+            else:                                                          # if relative path then put s into q
                 if type(s) == str:
                     if s[0]=='/':
                         q.put(scheme +'://'+ netloc + s)                  # make the path absolute and push into the queue 
