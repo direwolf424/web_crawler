@@ -12,6 +12,8 @@ def extract_href(html):                                   # function to extract 
     list_href = re.findall('<a(.+?)href="(.+?)"',html)
     return list_href
 
+def comment_log():
+    print("hello there")
 
 def func(q , url , url_list ,count , start , total_time): # scraper function
     q.put(url)                                            # push starting url into queue
